@@ -1,4 +1,4 @@
-;;tests wether a number is carmichael
+;;tests wether a number is carmichael (or prime)
 
 (define (carmichael? n)
   (define (carmichael-helper n a)

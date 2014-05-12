@@ -11,6 +11,7 @@
   (display n)
   (start-prime-test n (runtime)))
 
+; the second parameter to prime? 1000 should really not be constant
 (define (start-prime-test n start-time)
   (if (prime? n 1000)
       (report-prime (- (runtime) start-time))))

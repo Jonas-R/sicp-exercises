@@ -4,4 +4,4 @@
     (if (> a b)
 	result
 	(iter (+ a 1) (+ result (term a)))))
-  (iter 0 0))
+  (iter a 0))

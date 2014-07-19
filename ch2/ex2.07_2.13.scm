@@ -4,6 +4,16 @@
 (define (lower-bound i) (car i))
 (define (upper-bound i) (cdr i))
 
+;; ex 2.12
+(define (make-center-percent center tolerance)
+  (cons (- center (* center tolerance)) (+ center (* center tolerance))))
+
+(define (center interval)
+  (/ (+ (lower-bound interval) (upper-bound interval)) 2))
+
+(define (percent interval)
+  (/ (- (upper-bound interval) (center interval)) (center interval)))
+
 (define (add-interval x y)
   (make-interval (+ (lower-bound x) (lower-bound y))
 		 (+ (upper-bound x) (upper-bound y))))

@@ -26,7 +26,7 @@
 	       (scale-vect (ycor-vect v)
 			   (edge2-frame frame))))))
 
-;;; vector representation
+;;; vector representation (ex 2.46)
 (define (make-vect x y) (cons x y))
 (define (xcor-vect v) (car v))
 (define (ycor-vect v) (cdr v))
@@ -40,3 +40,80 @@
 (define (scale-vect v s)
   (cons (* s (xcor-vect v))
 	(* s (ycor-vect v))))
+
+;;; two representations of frames (ex 2.47)
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+(define (origin-frame frame)
+  (car frame))
+(define (edge1-frame frame)
+  (cadr frame))
+(define (edge2-frame frame)
+  (cadr (cdr frame)))
+
+(define (make-frame-alt origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+(define (origin-frame-alt frame)
+  (car frame))
+(define (edge1-frame-alt frame)
+  (cadr frame))
+(define (edge2-frame frame)
+  (cdr (cdr frame)))
+
+;;; line segment representation (ex 2.48)
+(define (make-segment v w)
+  (cons v w))
+(define (start-segment seg)
+  (car seg))
+(define (end-segment seg)
+  (cdr seg))
+
+(define (segments->painter segment-list)
+  (lambda (frame)
+    (for-each
+     (lambda (segment)
+       (draw-line
+	((frame-coord-map frame) (start-segment segment))
+	((frame-coord-map frame) (end-segment segment))))
+     segment-list)))
+
+;;; some painters (ex 2.49)
+(define outline-painter 
+  (segments->painter
+   (list (make-segment
+	  (make-vect 0.0 0.0)
+	  (make-vect 1.0 0.0))
+	 (make-segment
+	  (make-vect 0.0 0.0)
+	  (make-vect 0.0 1.0))
+	 (make-segment
+	  (make-vect 1.0 0.0)
+	  (make-vect 1.0 1.0))
+	 (make-segment
+	  (make-vect 0.0 1.0)
+	  (make-vect 1.0 1.0)))))
+
+(define X-painter 
+  (segments->painter
+   (list (make-segment
+	  (make-vect 1.0 0.0)
+	  (make-vect 0.0 1.0))
+	 (make-segment
+	  (make-vect 0.0 0.0)
+	  (make-vect 1.0 1.0)))))
+
+(define diamond-painter
+  (segments->painter
+   (list (make-segment
+	  (make-vect 0.5 0.0)
+	  (make-vect 1.0 0.5))
+	 (make-segment
+	  (make-vect 1.0 0.5)
+	  (make-vect 0.5 1.0))
+	 (make-segment
+	  (make-vect 0.0 0.5)
+	  (make-vect 0.5 0.0))
+	 (make-segment
+	  (make-vect 0.0 0.5)
+	  (make-vect 0.5 1.0)))))
+			

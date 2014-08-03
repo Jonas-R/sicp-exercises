@@ -42,23 +42,27 @@
 	(* s (ycor-vect v))))
 
 ;;; two representations of frames (ex 2.47)
-(define (make-frame origin edge1 edge2)
-  (list origin edge1 edge2))
+(define (make-frame origin edge1 edge2 device)
+  (list origin edge1 edge2 device))
 (define (origin-frame frame)
   (car frame))
 (define (edge1-frame frame)
   (cadr frame))
 (define (edge2-frame frame)
   (cadr (cdr frame)))
+(define (device-frame frame)
+  (cadr (cdr (cdr frame))))
 
-(define (make-frame-alt origin edge1 edge2)
-  (cons origin (cons edge1 edge2)))
+(define (make-frame-alt origin edge1 edge2 device)
+  (cons (cons origin (cons edge1 edge2)) device))
 (define (origin-frame-alt frame)
-  (car frame))
+  (car (car frame)))
 (define (edge1-frame-alt frame)
-  (cadr frame))
+  (cadr (car frame)))
 (define (edge2-frame frame)
-  (cdr (cdr frame)))
+  (cdr (cdr (car frame))))
+(define (device frame)
+  (cdr frame))
 
 ;;; line segment representation (ex 2.48)
 (define (make-segment v w)
@@ -73,9 +77,13 @@
     (for-each
      (lambda (segment)
        (draw-line
+	(device-frame frame)
 	((frame-coord-map frame) (start-segment segment))
 	((frame-coord-map frame) (end-segment segment))))
      segment-list)))
+
+(define (draw-line device v w)
+  (graphics-draw-line device (xcor-vect v) (xcor-vect w) (ycor-vect v) (ycor-vect w)))
 
 ;;; some painters (ex 2.49)
 (define outline-painter 

@@ -10,6 +10,22 @@
       (let ((smaller (up-split painter (- n 1))))
 	(below painter (beside smaller smaller)))))
 
+(define (corner-split painter n)
+  (if (= n 0)
+      painter
+      (let ((up (up-split painter (- n 1)))
+	    (right (right-split painter (- n 1))))
+	(let ((top-left (beside up up))
+	      (bottom-right (below right right))
+	      (corner (corner-split painter (- n 1))))
+	  (beside (below painter top-left)
+		  (below bottom-right corner))))))
+
+(define (square-limit painter n)
+  (let ((quarter (corner-split painter n)))
+    (let ((half (beside (flip-horiz quarter) quarter)))
+      (below (flip-vert half) half))))
+
 (define (frame-coord-map frame)
   (lambda (v)
     (add-vect
@@ -287,4 +303,9 @@ USAGE EXAMPLE:
 			  (make-vect 0 500)
 			  device))
 ((beside X-painter (below X-painter diamond-painter)) frame)
+(graphics-clear device)
+((corner-split wave-painter 4) frame)
+(graphics-clear device)
+((square-limit wave-painter 4) frame)
+(graphics-close device)
 |#

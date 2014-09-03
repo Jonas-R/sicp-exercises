@@ -48,3 +48,41 @@
         ((= bit 1) (right-branch branch))
         (else (error "bad bit -- CHOOSE-BRANCH" bit))))
 
+;; encoding (exercise 2.68)
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message) tree)
+	      (encode (cdr message) tree))))
+
+(define (encode-symbol symbol tree)
+  (cond ((null? tree) (error "Symbol not in tree!"))
+    	((leaf? tree) '())
+	((memq symbol (symbols (right-branch tree))) (cons 1 (encode-symbol symbol (right-branch tree))))
+	((memq symbol (symbols (left-branch tree)))  (cons 0 (encode-symbol symbol (left-branch tree))))
+	(else (error "Symbol not in tree!"))))
+
+;; generate huffman tree (exercise 2.69)
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+
+(define (successive-merge pairset)
+  (if (= (length pairset) 1) 
+      (car pairset)
+      (let ((new-node (make-code-tree (car pairset) (cadr pairset))))
+	   (successive-merge (adjoin-set new-node (cddr pairset))))))
+
+(define (adjoin-set x set)
+  (if (null? set)
+      (list x)
+      (cond ((>= (weight x) (weight (car set))) (cons (car set) (adjoin-set x (cdr set))))
+	    (else (cons x set)))))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)    ; symbol
+                               (cadr pair))  ; frequency
+                    (make-leaf-set (cdr pairs))))))
+

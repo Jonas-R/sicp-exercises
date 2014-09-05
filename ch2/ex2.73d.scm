@@ -5,7 +5,7 @@
 (define (deriv exp var)
    (cond ((number? exp) 0)
          ((variable? exp) (if (same-variable? exp var) 1 0))
-         (else ((get 'deriv (operator exp)) (operands exp)
+         (else ((get (operator exp) 'deriv) (operands exp)
                                             var))))
 (define (operator exp) (car exp))
 (define (operands exp) (cdr exp))
@@ -27,9 +27,9 @@
 			(make-exponentiation (base exp) (make-sum (exponent exp) '-1)))
 	  (deriv (base exp) var)))
   ;; interface to rest of system
-  (put 'deriv '+ deriv-sum)
-  (put 'deriv '* deriv-product)
-  (put 'deriv '** deriv-exponent)
+  (put '+ 'deriv deriv-sum)
+  (put '* 'deriv deriv-product)
+  (put '** 'deriv deriv-exponent)
   
   (display "done"))
   
@@ -44,10 +44,10 @@
 ;; dispatch table implementation
 (define dispatch-table (make-equal-hash-table))
 
-(define (put op type-tag function)
+(define (put type-tag op function)
   (hash-table/put! dispatch-table (list op type-tag) function))
 
-(define (get op type-tag)
+(define (get type-tag op)
   (hash-table/get dispatch-table (list op type-tag) '()))
 
 (install-package)

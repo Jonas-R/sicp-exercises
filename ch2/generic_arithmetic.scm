@@ -1,3 +1,5 @@
+(load "complex_arithmetic.scm")
+
 ;; generic arithmetic (code copied from book)
 (define (add x y) (apply-generic 'add x y))
 (define (sub x y) (apply-generic 'sub x y))
@@ -125,6 +127,40 @@
 (define (get op type-tag)
   (hash-table/get dispatch-table (list op type-tag) '()))
 
+;; Coercion
+
+(define (scheme-number->complex n)
+  (make-complex-from-real-imag (contents n) 0))
+
+;; coercion table implementation
+(define coercion-table (make-equal-hash-table))
+
+(define (put-coercion type1 type2 function)
+  (hash-table/put! coercion-table (list type1 type2) function))
+
+(define (get-coercion type1 type2)
+  (hash-table/get coercion-table (list type1 type2) '()))
+
+;; modified type tagging for primitive numbers
+(define (attach-tag type-tag contents)
+  (if (number? contents)
+      contents
+      (cons type-tag contents)))
+
+(define (type-tag datum)
+  (cond ((number? datum) 'scheme-number)
+	((pair? datum) (car datum))
+	(else (error "Bad tagged datum -- TYPE-TAG" datum))))
+
+(define (contents datum)
+  (cond ((number? datum) datum)
+	((pair? datum) (cdr datum))
+	(else (error "Bad tagged datum -- CONTENTS" datum))))
+
+(put-coercion 'scheme-number 'complex scheme-number->complex)
+
 (install-complex-package)
 (install-rational-package)
 (install-scheme-number-package)
+(install-polar-package)
+(install-rectangular-package)

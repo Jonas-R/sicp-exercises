@@ -1,5 +1,8 @@
-(load "generic_arithmetic.scm")
+;; generic arithmetic with simplified results
 
+(load "ex2.79.scm")
+
+;; raise
 (define (raise-num i) (make-rational i 1))
 (define (raise-rat r) (make-complex-from-real-imag (exact->inexact (/ (numer r) (denom r))) 0))
 
@@ -11,16 +14,38 @@
 (define (numer x) (car x))
 (define (denom x) (cdr x))
 
+
+;; project
+(define (project-rat r) (numer r))
+(define (project-complex z) (make-rational (real-part z) 1))
+
+(put 'project '(rational) project-rat)
+(put 'project '(complex) project-complex)
+
+(define (project x) (apply-generic 'project x))
+
+(define (drop n)
+  (if (not (null? (get 'project (list (type-tag n)))))
+      (if (equ? n (raise (project n)))
+	  (drop (project n))
+	  n)
+  n))
+
+
 ;; apply-generic for an arbitrary number of arguments, coerces using raise
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
       (if (not (null? proc))
-          (apply proc (map contents args))
+	  (if (equal? op 'raise)
+	      (apply proc (map contents args))
+	      (drop (apply proc (map contents args))))
 	  (let* ((coerced-args (try-coercion type-tags args))
 		(coerced-proc (get op (map type-tag coerced-args))))
 	    (if (not (null? coerced-proc))
-		(apply coerced-proc (map contents coerced-args)) 
+		(if (equal? op 'raise)
+		    (apply coerced-proc (map contents coerced-args))
+		    (drop (apply coerced-proc (map contents coerced-args))))
 		(error "No method for these types"
 		       (list op type-tags))))))))
 
@@ -57,3 +82,4 @@
   (define (and-helper x y)
     (and x y))
   (fold-right and-helper #t (map helper types args)))
+

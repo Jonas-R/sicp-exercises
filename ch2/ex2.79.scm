@@ -1,3 +1,5 @@
+(load "complex_arithmetic.scm")
+
 ;; generic arithmetic (code copied from book)
 (define (add x y) (apply-generic 'add x y))
 (define (sub x y) (apply-generic 'sub x y))
@@ -141,13 +143,17 @@
 (define (type-tag datum)
   (cond ((number? datum) 'scheme-number)
 	((pair? datum) (car datum))
+	((eq? datum #t) 'boolean)
 	(else (error "Bad tagged datum -- TYPE-TAG" datum))))
 
 (define (contents datum)
   (cond ((number? datum) datum)
 	((pair? datum) (cdr datum))
+	((eq? datum #t) #t)
 	(else (error "Bad tagged datum -- CONTENTS" datum))))
 
 (install-complex-package)
 (install-rational-package)
 (install-scheme-number-package)
+(install-rectangular-package)
+(install-polar-package)

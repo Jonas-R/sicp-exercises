@@ -1,3 +1,5 @@
+(load "complex_arithmetic.scm")
+
 ;; generic arithmetic (code copied from book)
 (define (add x y) (apply-generic 'add x y))
 (define (sub x y) (apply-generic 'sub x y))
@@ -155,6 +157,8 @@
 	((pair? datum) (cdr datum))
 	(else (error "Bad tagged datum -- CONTENTS" datum))))
 
+(install-rectangular-package)
+(install-polar-package)
 (install-complex-package)
 (install-rational-package)
 (install-scheme-number-package)

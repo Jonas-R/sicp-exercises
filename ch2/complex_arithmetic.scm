@@ -21,7 +21,7 @@
        (lambda (x y) (tag (make-from-real-imag x y))))
   (put 'make-from-mag-ang 'rectangular
        (lambda (r a) (tag (make-from-mag-ang r a))))
-  'done)
+  'donerect)
 
 (define (install-polar-package)
   ;; internal procedures

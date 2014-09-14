@@ -1,0 +1,26 @@
+;; password protected bank account
+
+(define (make-account balance pwd)
+  (define pwd-attempt-count 0)
+  (define (call-the-cops) (display "cops have been called!"))
+
+  (define (withdraw amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch pwd-attempt m)
+    (if (eq? pwd pwd-attempt)
+	(begin (set! pwd-attempt-count 0)
+	       (cond ((eq? m 'withdraw) withdraw)
+		     ((eq? m 'deposit) deposit)
+		     (else (error "Unknown request -- MAKE-ACCOUNT"
+				  m))))
+	(begin (set! pwd-attempt-count (+ pwd-attempt-count 1))
+	       (if (= 7 pwd-attempt-count)
+		   (call-the-cops)
+		   (error "Incorrect password")))))
+  dispatch)

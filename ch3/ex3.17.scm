@@ -1,0 +1,13 @@
+;; count pairs in a list (extremely inefficiently)
+(define (count-pairs x)
+  (define (count-pairs-helper x)
+    (if (or (not (pair? x)) (memq x seen))
+	0
+	(begin (set! seen (append! seen (list x)))
+	       (display seen)
+	       (newline)
+	       (+ (count-pairs-helper (car x))
+		  (count-pairs-helper (cdr x))
+		  1))))
+  (define seen '())
+  (count-pairs-helper x))

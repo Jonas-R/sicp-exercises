@@ -6,3 +6,4 @@
 			    (mul-series (stream-cdr s1) s2))))
 
 (define (scale-stream x s) (stream-map (lambda (el) (* x el)) s))
+(define (add-streams s1 s2) (stream-map + s1 s2))

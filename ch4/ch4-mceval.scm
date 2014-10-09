@@ -309,6 +309,8 @@
 	(list '* *)
 	(list '- -)
 	(list '/ /)
+	(list '= =)
+	(list '< <)
 ;;      more primitives
         ))
 

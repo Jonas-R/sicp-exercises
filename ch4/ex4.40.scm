@@ -1,5 +1,4 @@
 ;; load this into amb evaluator
-;; there are 5 solutions to this modified problem
 
 (define (distinct? items)
   (cond ((null? items) true)

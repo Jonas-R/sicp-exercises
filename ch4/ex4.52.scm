@@ -34,10 +34,6 @@
 
 #|
 Example from book, load into amb evaluator:
-(define (an-element-of items)
-  (require (not (null? items)))
-  (amb (car items) (an-element-of (cdr items))))
-
 (define (require p)
   (if (not p) (amb)))
 

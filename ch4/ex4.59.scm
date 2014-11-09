@@ -4,8 +4,7 @@
 (meeting ?div (friday ?time))
 
 ;; c)
-(and (job (hacker alyssa p) (?div . ?rest))
-     (meeting-time ?div (wednesday ?time)))
+(meeting-time (hacker alyssa p) (wednesday ?time)))
 
 (define microshaft-data-base
   '(

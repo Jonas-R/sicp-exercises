@@ -5,6 +5,7 @@
 ;;;; **NB** The actual "load" calls are implementation dependent.
 
 (load "ch5-regsim")			;reg machine simulator
+(load "ex5.16.scm")                     ;instruction tracing
 
 ;; **NB** next file contains another "load"
 (load "ch5-eceval-support")		;simulation of machine operations

@@ -54,7 +54,7 @@
               (else (error "Unknown request -- MACHINE" message))))
       dispatch)))
 
-
+#|
 (define fact-machine
   (make-machine
    '(n continue val)
@@ -89,3 +89,4 @@ fact-loop
 (start fact-machine)
 (display (get-register-contents fact-machine 'val))
 (newline)
+|#

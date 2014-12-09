@@ -130,12 +130,17 @@
    (list 'compiled-procedure? compiled-procedure?)
    (list 'compiled-procedure-entry compiled-procedure-entry)
    (list 'compiled-procedure-env compiled-procedure-env)
+   (list '* *)
+   (list '= =)
+   (list '- -)
+   (list '+ +)
    ))
 
 (define eceval
   (make-machine
    '(exp env val proc argl continue unev
 	 compapp			;*for compiled to call interpreted
+	 arg1 arg2 ;; for faster primitive operations (ex 5.38)
 	 )
    eceval-operations
   '(

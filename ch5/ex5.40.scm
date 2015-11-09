@@ -1,4 +1,5 @@
 (load "ex5.39.scm")
+(load "ch5-compiler.scm")
 
 (define (compile exp target linkage comp-env)
   (cond ((self-evaluating? exp)

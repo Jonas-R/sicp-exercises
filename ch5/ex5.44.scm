@@ -1,0 +1,47 @@
+(load "ex5.43.scm")
+
+(define (compile exp target linkage comp-env)
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp target linkage comp-env))
+        ((quoted? exp) (compile-quoted exp target linkage comp-env))
+        ((variable? exp)
+         (compile-variable exp target linkage comp-env))
+        ((assignment? exp)
+         (compile-assignment exp target linkage comp-env))
+        ((definition? exp)
+         (compile-definition exp target linkage comp-env))
+        ((if? exp) (compile-if exp target linkage comp-env))
+        ((lambda? exp) (compile-lambda exp target linkage comp-env))
+        ((begin? exp)
+         (compile-sequence (begin-actions exp)
+                           target
+                           linkage
+			   comp-env))
+        ((cond? exp) (compile (cond->if exp) target linkage comp-env))
+	((primitive? exp comp-env) 
+	  (compile-primitive exp target linkage comp-env))
+	((application? exp)
+         (compile-application exp target linkage comp-env))
+        (else
+         (error "Unknown expression type -- COMPILE" exp))))
+
+(define (primitive? exp comp-env)
+  (let ((res (find-variable (car exp) comp-env)))
+    (and (memq (car exp) '(+ - * / =))
+	 (eq? res 'not-found))))
+
+(define (spread-arguments oplist comp-env)
+  (let ((op1 (compile (car oplist) 'arg1 'next comp-env))
+	(op2 (compile (cadr oplist) 'arg2 'next comp-env)))
+    (list op1 op2)))
+
+(define (compile-primitive exp target linkage comp-env)
+  (let ((argument-instructions (spread-arguments (cdr exp) comp-env))
+	(operation (car exp)))
+    (end-with-linkage linkage
+		      (preserving '(env)
+		       (car argument-instructions)
+		       (preserving '(arg1)
+				   (cadr argument-instructions)
+				   (make-instruction-sequence '(arg1 arg2) (list target)
+							      `((assign ,target (op ,operation) (reg arg1) (reg arg2)))))))))
